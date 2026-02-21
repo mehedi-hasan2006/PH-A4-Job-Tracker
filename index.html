@@ -37,15 +37,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 mb-[30px]">
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <h3 class="text-[14px] font-medium text-[#323B49]">Total</h3>
-                    <p class="text-2xl font-semibold">8</p>
+                    <p  id="totalCount" class="text-2xl font-semibold">0</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <h3 class="text-[14px] font-medium text-[#323B49]">Interview</h3>
-                    <p class="text-2xl font-semibold text-green-500">8</p>
+                    <p id="interviewCount" class="text-2xl font-semibold text-green-500">0</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <h3 class="text-[14px] font-medium text-[#323B49]">Rejected</h3>
-                    <p class="text-2xl font-semibold text-error">8</p>
+                    <p id="rejectCount" class="text-2xl font-semibold text-error">0</p>
                 </div>
             </div>
             <hr class=" mb-[30px] opacity-35">
@@ -60,15 +60,15 @@
         </div>
 
         <div class="flex gap-2 mt-6 mb-4">
-            <button class="btn rounded-md bg-[#3B82F6] text-white px-[13px] py-p[10px] w-[80px]">All</button>
-            <button class="btn rounded-md bg-white text-[#64748B] px-[13px] py-p[10px] w-[80px]">Interview</button>
-            <button class="btn rounded-md bg-white text-[#64748B] px-[13px] py-p[10px] w-[80px]">Rejected</button>
+            <button  onclick="toggle('allBtn')" id="allBtn" class="tapBtn btn rounded-md bg-[#3B82F6] text-white px-[13px] py-p[10px] w-[80px]">All</button>
+            <button onclick="toggle('interviewBtn')" id="interviewBtn" class="tapBtn btn rounded-md bg-white text-[#64748B] px-[13px] py-p[10px] w-[80px]">Interview</button>
+            <button onclick="toggle('rejectBtn')" id="rejectBtn" class="tapBtn btn rounded-md bg-white text-[#64748B] px-[13px] py-p[10px] w-[80px]">Rejected</button>
         </div>
     </section>
 
     <!-- job card -->
-    <section class="max-w-[1140px] mx-auto px-[30px] pb-8">
-        <div class="bg-white rounded-md p-6 mb-4">
+    <section id="allCards" class="max-w-[1140px] mx-auto px-[30px] pb-8">
+        <div  class="bg-white rounded-md p-6 mb-4">
             <div class="flex justify-between">
                 <h2 class="text-[#002C5C] text-[18px]/[26px] font-semibold">Mobile First Corp</h2>
                 <div class="border-2 border-gray-400 rounded-full p-1">
@@ -285,7 +285,7 @@
 
     </section>
 
-
+    <script src="./index.js"></script>
 </body>
 
 </html>
