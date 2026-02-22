@@ -1,5 +1,6 @@
 let interviewCountNumber = [];
 let rejectCountNumber = [];
+let currentStatus = "all";
 
 let totalCount = document.getElementById("totalCount");
 let interviewCount = document.getElementById("interviewCount");
@@ -17,6 +18,7 @@ let filterSection = document.getElementById("filter-section");
 // no item found section
 let noItemSection = document.getElementById("no-item-found");
 
+// calculate count for each status
 function calculate() {
   totalCount.innerText = allCards.children.length;
   interviewCount.innerText = interviewCountNumber.length;
@@ -34,18 +36,46 @@ function toggle(id) {
   rejectBtn.classList.add("bg-white", "text-[#64748B]");
 
   let selected = document.getElementById(id);
+  currentStatus = id;
+
   selected.classList.remove("bg-white", "text-[#64748B]");
   selected.classList.add("bg-[#3B82F6]", "text-white");
 
-  if (id == 'interviewBtn') {
+  if (id == "interviewBtn") {
     allCards.classList.add("hidden");
     filterSection.classList.remove("hidden");
-  }else if (id == 'allBtn') {
+    renderInterview();
+  } else if (id == "allBtn") {
     allCards.classList.remove("hidden");
     filterSection.classList.add("hidden");
+  } else if (id == "rejectBtn") {
+    allCards.classList.add("hidden");
+    filterSection.classList.remove("hidden");
+    renderReject();
+  } else if (id == "allBtn") {
+    allCards.classList.remove("hidden");
+    filterSection.classList.add("hidden");
+    noItemSection.classList.add("hidden");
   }
 }
 
+function checkEmptyState() {
+  if (currentStatus === "interviewBtn") {
+    if (interviewCountNumber.length === 0) {
+      noItemSection.classList.remove("hidden");
+    } else {
+      noItemSection.classList.add("hidden");
+    }
+  } else if (currentStatus === "rejectBtn") {
+    if (rejectCountNumber.length === 0) {
+      noItemSection.classList.remove("hidden");
+    } else {
+      noItemSection.classList.add("hidden");
+    }
+  }
+}
+
+// delegate event for all cards
 allCards.addEventListener("click", function (event) {
   if (event.target.classList.contains("interview-btn")) {
     let parentNode = event.target.parentNode.parentNode.parentNode;
@@ -57,14 +87,18 @@ allCards.addEventListener("click", function (event) {
     let description = parentNode.querySelector(".description").innerText;
 
     parentNode.querySelector(".Status").innerText = "INTERVIEW";
-    parentNode.querySelector(".Status").classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
-    parentNode.querySelector(".Status").classList.add("bg-[#D1FAE5]", "text-[#065F46]");
+    parentNode
+      .querySelector(".Status")
+      .classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
+    parentNode
+      .querySelector(".Status")
+      .classList.add("bg-[#D1FAE5]", "text-[#065F46]");
 
     const cardInfo = {
       tittle,
       subTittle,
       salary,
-      status : "INTERVIEW",
+      status: "INTERVIEW",
       description,
     };
 
@@ -72,15 +106,19 @@ allCards.addEventListener("click", function (event) {
       (item) => item.tittle == cardInfo.tittle,
     );
 
-   
-
     if (!interviewExist) {
       interviewCountNumber.push(cardInfo);
     }
 
+    rejectCountNumber = rejectCountNumber.filter(
+      (item) => item.tittle != cardInfo.tittle,
+    );
+
+    if (currentStatus == "rejectBtn") {
+      renderReject();
+    }
     calculate();
-    renderInterview();
-  }else if (event.target.classList.contains("reject-btn")) {
+  } else if (event.target.classList.contains("reject-btn")) {
     let parentNode = event.target.parentNode.parentNode.parentNode;
 
     let tittle = parentNode.querySelector(".tittle").innerText;
@@ -90,14 +128,18 @@ allCards.addEventListener("click", function (event) {
     let description = parentNode.querySelector(".description").innerText;
 
     parentNode.querySelector(".Status").innerText = "REJECTED";
-    parentNode.querySelector(".Status").classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
-    parentNode.querySelector(".Status").classList.add("bg-[#FECACA]", "text-[#991B1B]");
+    parentNode
+      .querySelector(".Status")
+      .classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
+    parentNode
+      .querySelector(".Status")
+      .classList.add("bg-[#FECACA]", "text-[#991B1B]");
 
     const cardInfo = {
       tittle,
       subTittle,
       salary,
-      status : "REJECTED",
+      status: "REJECTED",
       description,
     };
 
@@ -105,15 +147,21 @@ allCards.addEventListener("click", function (event) {
       (item) => item.tittle == cardInfo.tittle,
     );
 
-   
-
     if (!rejectExist) {
       rejectCountNumber.push(cardInfo);
     }
 
+    interviewCountNumber = interviewCountNumber.filter(
+      (item) => item.tittle != cardInfo.tittle,
+    );
+
+    if (currentStatus == "interviewBtn") {
+      renderInterview();
+    }
+
     calculate();
-    renderInterview();
-}});
+  }
+});
 
 // Render for interview section
 function renderInterview() {
@@ -132,7 +180,7 @@ function renderInterview() {
                 <div>
                     <p class="subTittle text-[#64748B] text-[16px]/[22px]">${interview.subTittle}</p>
                     <p class="salary text-[#64748B] text-[14px]/[20px] mt-4">${interview.salary}</p>
-                    <button class="Status bg-[#EEF4FF] py-2 px-3 font-medium text-[14px] text-[#002C5C] rounded-md mt-4">${interview.status}</button>
+                    <button class="Status bg-[#D1FAE5] text-[#065F46] py-2 px-3 font-medium text-[14px]  rounded-md mt-4">${interview.status}</button>
                     <p class="description text-[#323B49] text-[14px]/[20px] pb-4 pt-2 ">${interview.description}</p>
 
                     <div>
@@ -143,8 +191,8 @@ function renderInterview() {
             </div>`;
     filterSection.appendChild(div);
   }
+  checkEmptyState();
 }
-
 
 // Render for reject section
 function renderReject() {
@@ -174,4 +222,5 @@ function renderReject() {
             </div>`;
     filterSection.appendChild(div);
   }
+  checkEmptyState();
 }
