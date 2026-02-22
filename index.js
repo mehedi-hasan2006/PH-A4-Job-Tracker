@@ -1,79 +1,93 @@
 let interviewCountNumber = [];
 let rejectCountNumber = [];
 
-let totalCount = document.getElementById('totalCount');
-let interviewCount = document.getElementById('interviewCount');
-let rejectCount = document.getElementById('rejectCount');
-let allCards = document.getElementById('allCards');
+let totalCount = document.getElementById("totalCount");
+let interviewCount = document.getElementById("interviewCount");
+let rejectCount = document.getElementById("rejectCount");
+let allCards = document.getElementById("allCards");
 
-
-// tap buttons 
-let allBtn = document.getElementById('allBtn');
-let interviewBtn = document.getElementById('interviewBtn');
-let rejectBtn = document.getElementById('rejectBtn');
-
+// tap buttons
+let allBtn = document.getElementById("allBtn");
+let interviewBtn = document.getElementById("interviewBtn");
+let rejectBtn = document.getElementById("rejectBtn");
 
 // filter cards
-let filterSection = document.getElementById('filter-section');
+let filterSection = document.getElementById("filter-section");
 
+// no item found section
+let noItemSection = document.getElementById("no-item-found");
 
-function calculate(){
-    totalCount.innerText = allCards.children.length;
-    interviewCount.innerText = interviewCountNumber.length;
-    rejectCount.innerText = rejectCountNumber.length;
+function calculate() {
+  totalCount.innerText = allCards.children.length;
+  interviewCount.innerText = interviewCountNumber.length;
+  rejectCount.innerText = rejectCountNumber.length;
 }
 calculate();
 
-function toggle(id){
-    allBtn.classList.remove('bg-[#3B82F6]', 'text-white');
-    interviewBtn.classList.remove('bg-[#3B82F6]', 'text-white');
-    rejectBtn.classList.remove('bg-[#3B82F6]', 'text-white');
+function toggle(id) {
+  allBtn.classList.remove("bg-[#3B82F6]", "text-white");
+  interviewBtn.classList.remove("bg-[#3B82F6]", "text-white");
+  rejectBtn.classList.remove("bg-[#3B82F6]", "text-white");
 
-    allBtn.classList.add('bg-white', 'text-[#64748B]');
-    interviewBtn.classList.add('bg-white', 'text-[#64748B]');
-    rejectBtn.classList.add('bg-white', 'text-[#64748B]');
+  allBtn.classList.add("bg-white", "text-[#64748B]");
+  interviewBtn.classList.add("bg-white", "text-[#64748B]");
+  rejectBtn.classList.add("bg-white", "text-[#64748B]");
 
+  let selected = document.getElementById(id);
+  selected.classList.remove("bg-white", "text-[#64748B]");
+  selected.classList.add("bg-[#3B82F6]", "text-white");
 
-    let selected = document.getElementById(id);
-    selected.classList.remove('bg-white', 'text-[#64748B]');
-    selected.classList.add('bg-[#3B82F6]',  'text-white');
+  if (id == 'interviewBtn') {
+    allCards.classList.add("hidden");
+    filterSection.classList.remove("hidden");
+  }else if (id == 'allBtn') {
+    allCards.classList.remove("hidden");
+    filterSection.classList.add("hidden");
+  }
 }
 
-
-
-allCards.addEventListener('click', function(event){
+allCards.addEventListener("click", function (event) {
+  if (event.target.classList.contains("interview-btn")) {
     let parentNode = event.target.parentNode.parentNode.parentNode;
 
-    let tittle = parentNode.querySelector('.tittle').innerText;
-    let subTittle = parentNode.querySelector('.subTittle').innerText;
-    let salary = parentNode.querySelector('.salary').innerText;
-    let status = parentNode.querySelector('.Status').innerText;
-    let description = parentNode.querySelector('.description').innerText;
+    let tittle = parentNode.querySelector(".tittle").innerText;
+    let subTittle = parentNode.querySelector(".subTittle").innerText;
+    let salary = parentNode.querySelector(".salary").innerText;
+    let status = parentNode.querySelector(".Status").innerText;
+    let description = parentNode.querySelector(".description").innerText;
+
+    parentNode.querySelector(".Status").innerText = "INTERVIEW";
+    parentNode.querySelector(".Status").classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
+    parentNode.querySelector(".Status").classList.add("bg-[#D1FAE5]", "text-[#065F46]");
 
     const cardInfo = {
-        tittle,
-        subTittle,
-        salary,
-        status,
-        description,
-    }
+      tittle,
+      subTittle,
+      salary,
+      status : "INTERVIEW",
+      description,
+    };
+
+    let interviewExist = interviewCountNumber.find(
+      (item) => item.tittle == cardInfo.tittle,
+    );
+
    
-    let interviewExist = interviewCountNumber.find(item=> item.tittle == cardInfo.tittle);
 
-    if(!interviewExist){
-        interviewCountNumber.push(cardInfo);
+    if (!interviewExist) {
+      interviewCountNumber.push(cardInfo);
     }
 
-    
     renderInterview();
-})
+  }
+});
 
-function renderInterview(){
-    filterSection.innerHTML = '';
-    for(let interview of interviewCountNumber){
-        let div = document.createElement('div');
-        div.className = 'bg-white rounded-md p-6 mb-4';
-        div.innerHTML = `
+function renderInterview() {
+  filterSection.innerHTML = "";
+  for (let interview of interviewCountNumber) {
+    let div = document.createElement("div");
+    div.className = "bg-white rounded-md p-6 mb-4";
+    div.innerHTML = `
             <div class="bg-white rounded-md p-6 mb-4">
                 <div class="flex justify-between">
                     <h2 class="tittle text-[#002C5C] text-[18px]/[26px] font-semibold">${interview.tittle}</h2>
@@ -93,6 +107,8 @@ function renderInterview(){
                     </div>
                 </div>
             </div>`;
-        filterSection.appendChild(div);
-    }
+    filterSection.appendChild(div);
+  }
 }
+
+
