@@ -78,6 +78,7 @@ allCards.addEventListener("click", function (event) {
       interviewCountNumber.push(cardInfo);
     }
 
+    calculate();
     renderInterview();
   }
 });
