@@ -80,9 +80,42 @@ allCards.addEventListener("click", function (event) {
 
     calculate();
     renderInterview();
-  }
-});
+  }else if (event.target.classList.contains("reject-btn")) {
+    let parentNode = event.target.parentNode.parentNode.parentNode;
 
+    let tittle = parentNode.querySelector(".tittle").innerText;
+    let subTittle = parentNode.querySelector(".subTittle").innerText;
+    let salary = parentNode.querySelector(".salary").innerText;
+    let status = parentNode.querySelector(".Status").innerText;
+    let description = parentNode.querySelector(".description").innerText;
+
+    parentNode.querySelector(".Status").innerText = "REJECTED";
+    parentNode.querySelector(".Status").classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
+    parentNode.querySelector(".Status").classList.add("bg-[#FECACA]", "text-[#991B1B]");
+
+    const cardInfo = {
+      tittle,
+      subTittle,
+      salary,
+      status : "REJECTED",
+      description,
+    };
+
+    let rejectExist = rejectCountNumber.find(
+      (item) => item.tittle == cardInfo.tittle,
+    );
+
+   
+
+    if (!rejectExist) {
+      rejectCountNumber.push(cardInfo);
+    }
+
+    calculate();
+    renderInterview();
+}});
+
+// Render for interview section
 function renderInterview() {
   filterSection.innerHTML = "";
   for (let interview of interviewCountNumber) {
@@ -113,3 +146,32 @@ function renderInterview() {
 }
 
 
+// Render for reject section
+function renderReject() {
+  filterSection.innerHTML = "";
+  for (let reject of rejectCountNumber) {
+    let div = document.createElement("div");
+    div.className = "bg-white rounded-md p-6 mb-4";
+    div.innerHTML = `
+            <div class="bg-white rounded-md p-6 mb-4">
+                <div class="flex justify-between">
+                    <h2 class="tittle text-[#002C5C] text-[18px]/[26px] font-semibold">${reject.tittle}</h2>
+                    <div class="border-2 border-gray-400 rounded-full p-1">
+                        <i class="delete-btn fa-regular fa-trash-can  cursor-pointer transform hover:scale-120 opacity-70 "></i>
+                    </div>
+                </div>
+                <div>
+                    <p class="subTittle text-[#64748B] text-[16px]/[22px]">${reject.subTittle}</p>
+                    <p class="salary text-[#64748B] text-[14px]/[20px] mt-4">${reject.salary}</p>
+                    <button class="Status bg-[#FECACA] py-2 px-3 font-medium text-[14px] text-[#991B1B] rounded-md mt-4">${reject.status}</button>
+                    <p class="description text-[#323B49] text-[14px]/[20px] pb-4 pt-2 ">${reject.description}</p>
+
+                    <div>
+                        <button class="interview-btn btn btn-outline btn-success uppercase">interview</button>
+                        <button class="reject-btn btn btn-outline btn-error uppercase">Rejected</button>
+                    </div>
+                </div>
+            </div>`;
+    filterSection.appendChild(div);
+  }
+}
