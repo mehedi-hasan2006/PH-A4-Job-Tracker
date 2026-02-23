@@ -6,6 +6,7 @@ let totalCount = document.getElementById("totalCount");
 let interviewCount = document.getElementById("interviewCount");
 let rejectCount = document.getElementById("rejectCount");
 let allCards = document.getElementById("allCards");
+let jobNumber = document.getElementById("jobNumber");
 
 // tap buttons
 let allBtn = document.getElementById("allBtn");
@@ -26,6 +27,8 @@ function calculate() {
 }
 calculate();
 
+
+// function for button toggle and filter cards
 function toggle(id) {
   allBtn.classList.remove("bg-[#3B82F6]", "text-white");
   interviewBtn.classList.remove("bg-[#3B82F6]", "text-white");
@@ -59,6 +62,7 @@ function toggle(id) {
   }
 }
 
+// function for item not found
 function checkEmptyState() {
   if (currentStatus === "interviewBtn") {
     if (interviewCountNumber.length === 0) {
@@ -77,6 +81,31 @@ function checkEmptyState() {
 
 // delegate event for all cards
 allCards.addEventListener("click", function (event) {
+  // Event delegation for delete button
+  filterSection.addEventListener("click", function (event) {
+    if (event.target.classList.contains("delete-btn")) {
+      let parentNode = event.target.closest(".bg-white");
+
+      let title = parentNode.querySelector(".tittle").innerText;
+
+      
+      interviewCountNumber = interviewCountNumber.filter(
+        (item) => item.tittle !== title,
+      );
+
+      
+      rejectCountNumber = rejectCountNumber.filter(
+        (item) => item.tittle !== title,
+      );
+
+      parentNode.remove();
+
+      calculate();
+      checkEmptyState();
+    }
+  });
+
+  // event delegation for interview in all cards section
   if (event.target.classList.contains("interview-btn")) {
     let parentNode = event.target.parentNode.parentNode.parentNode;
 
@@ -118,7 +147,10 @@ allCards.addEventListener("click", function (event) {
       renderReject();
     }
     calculate();
-  } else if (event.target.classList.contains("reject-btn")) {
+  }
+
+  // event delegation for reject
+  else if (event.target.classList.contains("reject-btn")) {
     let parentNode = event.target.parentNode.parentNode.parentNode;
 
     let tittle = parentNode.querySelector(".tittle").innerText;
@@ -160,6 +192,24 @@ allCards.addEventListener("click", function (event) {
     }
 
     calculate();
+  } 
+    // event delegation for delete buttion in interview and reject section  
+  else if (event.target.classList.contains("delete-btn")) {
+    let parentNode = event.target.closest(".bg-white");
+
+    let title = parentNode.querySelector(".tittle").innerText;
+
+    interviewCountNumber = interviewCountNumber.filter(
+      (item) => item.tittle !== title,
+    );
+
+    rejectCountNumber = rejectCountNumber.filter(
+      (item) => item.tittle !== title,
+    );
+
+    parentNode.remove();
+
+    calculate();
   }
 });
 
@@ -168,7 +218,6 @@ function renderInterview() {
   filterSection.innerHTML = "";
   for (let interview of interviewCountNumber) {
     let div = document.createElement("div");
-    div.className = "bg-white rounded-md p-6 mb-4";
     div.innerHTML = `
             <div class="bg-white rounded-md p-6 mb-4">
                 <div class="flex justify-between">
@@ -199,7 +248,6 @@ function renderReject() {
   filterSection.innerHTML = "";
   for (let reject of rejectCountNumber) {
     let div = document.createElement("div");
-    div.className = "bg-white rounded-md p-6 mb-4";
     div.innerHTML = `
             <div class="bg-white rounded-md p-6 mb-4">
                 <div class="flex justify-between">

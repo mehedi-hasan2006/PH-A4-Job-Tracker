@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <!-- DaisyUI + Tailwind CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
 
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
@@ -56,7 +57,7 @@
     <section class="max-w-[1140px] mx-auto px-[30px]">
         <div class="flex justify-between">
             <h3 class="text-info-content font-bold text-2xl">Available Jobs</h3>
-            <p class="text-[#64748B] font-medium">8 jobs</p>
+            <p class="text-[#64748B] font-medium" id="jobNumber">8 jobs</p>
         </div>
 
         <div class="flex gap-2 mt-6 mb-4">
