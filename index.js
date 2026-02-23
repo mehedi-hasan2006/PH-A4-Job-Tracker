@@ -21,12 +21,21 @@ let noItemSection = document.getElementById("no-item-found");
 
 // calculate count for each status
 function calculate() {
-  totalCount.innerText = allCards.children.length;
+  let total = allCards.children.length;
+  totalCount.innerText = total;
   interviewCount.innerText = interviewCountNumber.length;
   rejectCount.innerText = rejectCountNumber.length;
+
+  if (currentStatus === "allBtn") {
+    jobNumber.innerText = total + " Jobs";
+  } else if (currentStatus === "interviewBtn") {
+    jobNumber.innerText =
+      interviewCountNumber.length + " of " + total + " Jobs";
+  } else if (currentStatus === "rejectBtn") {
+    jobNumber.innerText = rejectCountNumber.length + " of " + total + " Jobs";
+  }
 }
 calculate();
-
 
 // function for button toggle and filter cards
 function toggle(id) {
@@ -48,23 +57,27 @@ function toggle(id) {
     allCards.classList.add("hidden");
     filterSection.classList.remove("hidden");
     renderInterview();
-  } else if (id == "allBtn") {
-    allCards.classList.remove("hidden");
-    filterSection.classList.add("hidden");
   } else if (id == "rejectBtn") {
     allCards.classList.add("hidden");
     filterSection.classList.remove("hidden");
     renderReject();
-  } else if (id == "allBtn") {
+  } else {
     allCards.classList.remove("hidden");
     filterSection.classList.add("hidden");
     noItemSection.classList.add("hidden");
   }
+  calculate();
 }
 
 // function for item not found
 function checkEmptyState() {
-  if (currentStatus === "interviewBtn") {
+  if (currentStatus === "allBtn") {
+    if (allCards.children.length === 0) {
+      noItemSection.classList.remove("hidden");
+    } else {
+      noItemSection.classList.add("hidden");
+    }
+  } else if (currentStatus === "interviewBtn") {
     if (interviewCountNumber.length === 0) {
       noItemSection.classList.remove("hidden");
     } else {
@@ -78,36 +91,13 @@ function checkEmptyState() {
     }
   }
 }
+checkEmptyState();
 
 // delegate event for all cards
 allCards.addEventListener("click", function (event) {
-  // Event delegation for delete button
-  filterSection.addEventListener("click", function (event) {
-    if (event.target.classList.contains("delete-btn")) {
-      let parentNode = event.target.closest(".bg-white");
-
-      let title = parentNode.querySelector(".tittle").innerText;
-
-      
-      interviewCountNumber = interviewCountNumber.filter(
-        (item) => item.tittle !== title,
-      );
-
-      
-      rejectCountNumber = rejectCountNumber.filter(
-        (item) => item.tittle !== title,
-      );
-
-      parentNode.remove();
-
-      calculate();
-      checkEmptyState();
-    }
-  });
-
   // event delegation for interview in all cards section
   if (event.target.classList.contains("interview-btn")) {
-    let parentNode = event.target.parentNode.parentNode.parentNode;
+    let parentNode = event.target.closest(".job-card");
 
     let tittle = parentNode.querySelector(".tittle").innerText;
     let subTittle = parentNode.querySelector(".subTittle").innerText;
@@ -118,7 +108,12 @@ allCards.addEventListener("click", function (event) {
     parentNode.querySelector(".Status").innerText = "INTERVIEW";
     parentNode
       .querySelector(".Status")
-      .classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
+      .classList.remove(
+        "bg-[#FECACA]",
+        "text-[#991B1B]",
+        "bg-[#EEF4FF]",
+        "text-[#002C5C]",
+      );
     parentNode
       .querySelector(".Status")
       .classList.add("bg-[#D1FAE5]", "text-[#065F46]");
@@ -147,11 +142,12 @@ allCards.addEventListener("click", function (event) {
       renderReject();
     }
     calculate();
+    checkEmptyState();
   }
 
   // event delegation for reject
   else if (event.target.classList.contains("reject-btn")) {
-    let parentNode = event.target.parentNode.parentNode.parentNode;
+    let parentNode = event.target.closest(".job-card");
 
     let tittle = parentNode.querySelector(".tittle").innerText;
     let subTittle = parentNode.querySelector(".subTittle").innerText;
@@ -162,7 +158,12 @@ allCards.addEventListener("click", function (event) {
     parentNode.querySelector(".Status").innerText = "REJECTED";
     parentNode
       .querySelector(".Status")
-      .classList.remove("bg-[#EEF4FF]", "text-[#002C5C]");
+      .classList.remove(
+        "bg-[#EEF4FF]",
+        "text-[#002C5C]",
+        "bg-[#D1FAE5]",
+        "text-[#065F46]",
+      );
     parentNode
       .querySelector(".Status")
       .classList.add("bg-[#FECACA]", "text-[#991B1B]");
@@ -192,10 +193,33 @@ allCards.addEventListener("click", function (event) {
     }
 
     calculate();
-  } 
-    // event delegation for delete buttion in interview and reject section  
+  }
+  // event delegation for delete buttion in interview and reject section
   else if (event.target.classList.contains("delete-btn")) {
-    let parentNode = event.target.closest(".bg-white");
+    let parentNode = event.target.closest(".job-card");
+
+    let title = parentNode.querySelector(".tittle").innerText;
+
+    interviewCountNumber = interviewCountNumber.filter(
+      (item) => item.tittle !== title,
+    );
+
+    rejectCountNumber = rejectCountNumber.filter(
+      (item) => item.tittle !== title,
+    );
+
+    // if (confirm("Are you sure you want to delete this job?")) {
+    //   parentNode.remove();
+    // }
+    parentNode.remove();
+    calculate();
+  }
+});
+
+// Event delegation for delete button
+filterSection.addEventListener("click", function (event) {
+  if (event.target.classList.contains("delete-btn")) {
+    let parentNode = event.target.closest(".job-card");
 
     let title = parentNode.querySelector(".tittle").innerText;
 
