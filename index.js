@@ -208,11 +208,11 @@ allCards.addEventListener("click", function (event) {
       (item) => item.tittle !== title,
     );
 
-    // if (confirm("Are you sure you want to delete this job?")) {
-    //   parentNode.remove();
-    // }
-    parentNode.remove();
+    if (confirm("Are you sure you want to delete this job?")) {
+      parentNode.remove();
+    }
     calculate();
+    checkEmptyState();
   }
 });
 
@@ -243,7 +243,7 @@ function renderInterview() {
   for (let interview of interviewCountNumber) {
     let div = document.createElement("div");
     div.innerHTML = `
-            <div class="bg-white rounded-md p-6 mb-4">
+            <div class="job-card bg-white rounded-md p-6 mb-4">
                 <div class="flex justify-between">
                     <h2 class="tittle text-[#002C5C] text-[18px]/[26px] font-semibold">${interview.tittle}</h2>
                     <div class="border-2 border-gray-400 rounded-full p-1">
@@ -273,7 +273,7 @@ function renderReject() {
   for (let reject of rejectCountNumber) {
     let div = document.createElement("div");
     div.innerHTML = `
-            <div class="bg-white rounded-md p-6 mb-4">
+            <div class="job-card bg-white rounded-md p-6 mb-4">
                 <div class="flex justify-between">
                     <h2 class="tittle text-[#002C5C] text-[18px]/[26px] font-semibold">${reject.tittle}</h2>
                     <div class="border-2 border-gray-400 rounded-full p-1">
