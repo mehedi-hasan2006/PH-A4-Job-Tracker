@@ -21,7 +21,8 @@ let noItemSection = document.getElementById("no-item-found");
 
 // calculate count for each status
 function calculate() {
-  let total = allCards.children.length;
+  let total = allCards.querySelectorAll(".job-card").length;
+
   totalCount.innerText = total;
   interviewCount.innerText = interviewCountNumber.length;
   rejectCount.innerText = rejectCountNumber.length;
@@ -34,6 +35,7 @@ function calculate() {
   } else if (currentStatus === "rejectBtn") {
     jobNumber.innerText = rejectCountNumber.length + " of " + total + " Jobs";
   }
+  checkEmptyState();
 }
 calculate();
 
@@ -67,12 +69,15 @@ function toggle(id) {
     noItemSection.classList.add("hidden");
   }
   calculate();
+  checkEmptyState();
 }
 
 // function for item not found
 function checkEmptyState() {
+  let total = allCards.querySelectorAll(".job-card").length;
+
   if (currentStatus === "allBtn") {
-    if (allCards.children.length === 0) {
+    if (total === 0) {
       noItemSection.classList.remove("hidden");
     } else {
       noItemSection.classList.add("hidden");
@@ -92,6 +97,15 @@ function checkEmptyState() {
   }
 }
 checkEmptyState();
+
+// render current tab
+function renderCurrentTab() {
+  if (currentStatus === "interviewBtn") {
+    renderInterview();
+  } else if (currentStatus === "rejectBtn") {
+    renderReject();
+  }
+}
 
 // delegate event for all cards
 allCards.addEventListener("click", function (event) {
@@ -191,50 +205,96 @@ allCards.addEventListener("click", function (event) {
     if (currentStatus == "interviewBtn") {
       renderInterview();
     }
-
     calculate();
   }
   // event delegation for delete buttion in interview and reject section
   else if (event.target.classList.contains("delete-btn")) {
     let parentNode = event.target.closest(".job-card");
-
     let title = parentNode.querySelector(".tittle").innerText;
 
-    interviewCountNumber = interviewCountNumber.filter(
-      (item) => item.tittle !== title,
-    );
+    interviewCountNumber = interviewCountNumber.filter(function (item) {
+      return item.tittle !== title;
+    });
 
-    rejectCountNumber = rejectCountNumber.filter(
-      (item) => item.tittle !== title,
-    );
+    rejectCountNumber = rejectCountNumber.filter(function (item) {
+      return item.tittle !== title;
+    });
 
     if (confirm("Are you sure you want to delete this job?")) {
       parentNode.remove();
     }
+
     calculate();
-    checkEmptyState();
   }
 });
 
-// Event delegation for delete button
+// Event delegation for filter section (interview & reject tab)
 filterSection.addEventListener("click", function (event) {
-  if (event.target.classList.contains("delete-btn")) {
-    let parentNode = event.target.closest(".job-card");
+  let parentNode = event.target.closest(".job-card");
+  if (!parentNode) return;
 
-    let title = parentNode.querySelector(".tittle").innerText;
+  let title = parentNode.querySelector(".tittle").innerText;
 
-    interviewCountNumber = interviewCountNumber.filter(
-      (item) => item.tittle !== title,
-    );
+  let mainCard = [...allCards.querySelectorAll(".job-card")].find(
+    (card) => card.querySelector(".tittle").innerText === title,
+  );
 
+  //  interviewBtn
+  if (event.target.classList.contains("interview-btn")) {
     rejectCountNumber = rejectCountNumber.filter(
       (item) => item.tittle !== title,
     );
 
-    parentNode.remove();
+    if (!interviewCountNumber.find((item) => item.tittle === title)) {
+      let subTittle = mainCard.querySelector(".subTittle").innerText;
+      let salary = mainCard.querySelector(".salary").innerText;
+      let description = mainCard.querySelector(".description").innerText;
 
-    calculate();
+      interviewCountNumber.push({
+        tittle: title,
+        subTittle,
+        salary,
+        status: "INTERVIEW",
+        description,
+      });
+    }
+
+    // main card status update
+    mainCard.querySelector(".Status").innerText = "INTERVIEW";
+    mainCard.querySelector(".Status").className =
+      "Status bg-[#D1FAE5] text-[#065F46] py-2 px-3 font-medium text-[14px] rounded-md mt-4";
+
+    renderCurrentTab();
   }
+
+  // rejectBtn
+  else if (event.target.classList.contains("reject-btn")) {
+    interviewCountNumber = interviewCountNumber.filter(
+      (item) => item.tittle !== title,
+    );
+
+    if (!rejectCountNumber.find((item) => item.tittle === title)) {
+      let subTittle = mainCard.querySelector(".subTittle").innerText;
+      let salary = mainCard.querySelector(".salary").innerText;
+      let description = mainCard.querySelector(".description").innerText;
+
+      rejectCountNumber.push({
+        tittle: title,
+        subTittle,
+        salary,
+        status: "REJECTED",
+        description,
+      });
+    }
+
+    mainCard.querySelector(".Status").innerText = "REJECTED";
+    mainCard.querySelector(".Status").className =
+      "Status bg-[#FECACA] text-[#991B1B] py-2 px-3 font-medium text-[14px] rounded-md mt-4";
+
+    renderCurrentTab();
+  }
+  calculate();
+  checkEmptyState();
 });
 
 // Render for interview section
