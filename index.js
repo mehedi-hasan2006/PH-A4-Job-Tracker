@@ -27,6 +27,7 @@ function calculate() {
   interviewCount.innerText = interviewCountNumber.length;
   rejectCount.innerText = rejectCountNumber.length;
 
+  jobNumber.innerText = total + " Jobs";
   if (currentStatus === "allBtn") {
     jobNumber.innerText = total + " Jobs";
   } else if (currentStatus === "interviewBtn") {
@@ -105,6 +106,34 @@ function renderCurrentTab() {
   } else if (currentStatus === "rejectBtn") {
     renderReject();
   }
+}
+
+function deleteJob(title) {
+  interviewCountNumber = interviewCountNumber.filter(function (item) {
+    return item.tittle !== title;
+  });
+
+  rejectCountNumber = rejectCountNumber.filter(function (item) {
+    return item.tittle !== title;
+  });
+
+  let cards = allCards.querySelectorAll(".job-card");
+
+  for (let i = 0; i < cards.length; i++) {
+    let t = cards[i].querySelector(".tittle").innerText;
+    if (t === title) {
+      cards[i].remove();
+      break;
+    }
+  }
+
+  if (currentStatus === "interviewBtn") {
+    renderInterview();
+  } else if (currentStatus === "rejectBtn") {
+    renderReject();
+  }
+
+  calculate();
 }
 
 // delegate event for all cards
@@ -212,19 +241,9 @@ allCards.addEventListener("click", function (event) {
     let parentNode = event.target.closest(".job-card");
     let title = parentNode.querySelector(".tittle").innerText;
 
-    interviewCountNumber = interviewCountNumber.filter(function (item) {
-      return item.tittle !== title;
-    });
-
-    rejectCountNumber = rejectCountNumber.filter(function (item) {
-      return item.tittle !== title;
-    });
-
     if (confirm("Are you sure you want to delete this job?")) {
-      parentNode.remove();
+      deleteJob(title);
     }
-
-    calculate();
   }
 });
 
@@ -258,8 +277,6 @@ filterSection.addEventListener("click", function (event) {
         description,
       });
     }
-
-    // main card status update
     mainCard.querySelector(".Status").innerText = "INTERVIEW";
     mainCard.querySelector(".Status").className =
       "Status bg-[#D1FAE5] text-[#065F46] py-2 px-3 font-medium text-[14px] rounded-md mt-4";
@@ -292,6 +309,15 @@ filterSection.addEventListener("click", function (event) {
       "Status bg-[#FECACA] text-[#991B1B] py-2 px-3 font-medium text-[14px] rounded-md mt-4";
 
     renderCurrentTab();
+  } else if (event.target.classList.contains("delete-btn")) {
+    let parentNode = event.target.closest(".job-card");
+    let title = parentNode.querySelector(".tittle").innerText;
+    deleteJob(title);
+    if (currentStatus === "interviewBtn") {
+      renderInterview();
+    } else if (currentStatus === "rejectBtn") {
+      renderReject();
+    }
   }
   calculate();
   checkEmptyState();
